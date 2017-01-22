@@ -2,14 +2,15 @@
 
 # Machine name.
 function box_name {
-    [ -f ~/.box-name ] && cat ~/.box-name || echo $HOST
+    [ -f ~/.box-name ] && cat ~/.box-name || echo ${HOST/.local}
 }
 
 # Directory info.
-local current_dir='${PWD/#$HOME/~}'
+# local current_dir='${PWD/#$HOME/~}'
+local current_dir='${${PWD/#$HOME/~}##*/}'
 
 # VCS
-YS_VCS_PROMPT_PREFIX1=" %{$fg[white]%}on%{$reset_color%} "
+YS_VCS_PROMPT_PREFIX1=" %{$reset_color%}"
 YS_VCS_PROMPT_PREFIX2=":%{$fg[cyan]%}"
 YS_VCS_PROMPT_SUFFIX="%{$reset_color%}"
 YS_VCS_PROMPT_DIRTY=" %{$fg[red]%}✖︎"
@@ -39,18 +40,15 @@ ys_hg_prompt_info() {
 }
 
 # Prompt format: \n # USER at MACHINE in DIRECTORY on git:BRANCH STATE [TIME] \n $
-PROMPT="
-%{$terminfo[bold]$fg[blue]%}#%{$reset_color%} \
-%{$fg[cyan]%}%n \
-%{$fg[white]%}at \
-%{$fg[green]%}$(box_name) \
-%{$fg[white]%}in \
-%{$terminfo[bold]$fg[yellow]%}${current_dir}%{$reset_color%}\
+PROMPT="\
+%{$fg[blue]%}$(box_name)\
+%{$fg[white]%}:\
+%{$fg[yellow]%}${current_dir}%{$reset_color%}\
 ${hg_info}\
 ${git_info} \
-%{$fg[white]%}[%*]
-%{$terminfo[bold]$fg[red]%}→ %{$reset_color%}"
+%{$fg[white]%}[%*] %{$reset_color%}"
 
+# Prompt format: \n # USER at MACHINE in DIRECTORY on git:BRANCH STATE [TIME] \n $
 if [[ "$USER" == "root" ]]; then
 PROMPT="
 %{$terminfo[bold]$fg[blue]%}#%{$reset_color%} \
